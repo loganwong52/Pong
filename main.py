@@ -13,9 +13,14 @@ w = 640
 h = 480
 screen = pygame.display.set_mode((w, h))
 pygame.display.set_caption("Pong")
+game_active = True
 
 # Create the clock object for the framerate
 clock = pygame.time.Clock()
+
+# Timer for enemy
+# opponent_timer = pygame.USEREVENT + 1
+# pygame.time.set_timer(opponent_timer, 3000)
 
 # Player score
 score = 0
