@@ -30,10 +30,9 @@ class Ball(pygame.sprite.Sprite):
             self.game_started = False
 
         if keys[pygame.K_SPACE] and self.direction == "":
-            # space key is pressed, launch ball, game actuall starts
+            # space key is pressed, launch ball, game actually starts
             self.direction = "right"
             self.game_started = True
-            print("self.follow player: " + self.follow_player)
 
         # Ball follows player before space is pressed
         if not self.game_started:
@@ -46,8 +45,6 @@ class Ball(pygame.sprite.Sprite):
                 self.move_down()
 
             self.follow_player = ""
-
-            print("inside self.follow player: " + self.follow_player)
 
     def move_right(self):
         # Moves to the right until it hits the opponent
@@ -131,19 +128,3 @@ class Ball(pygame.sprite.Sprite):
         elif self.direction == "left":
             self.move_left()
             self.move_up_or_down()
-
-        # if self.game_started:
-        #     if self.rect.top <= 0:
-        #         self.rect.top = 0
-        #         self.vertical_direction = ""
-        #     elif self.rect.bottom >= h:
-        #         self.rect.bottom = h
-        #         self.vertical_direction = ""
-
-        # if not self.game_started:
-        #     # check if up/down keys pressed
-        #     if self.follow_player == "up":
-        #         self.move_up()
-        #     elif self.follow_player == "down":
-        #         self.move_down()
-        #     self.follow_player = ""

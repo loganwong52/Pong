@@ -20,8 +20,6 @@ opponent.add(Opponent())
 
 ball = pygame.sprite.Group()
 the_ball = Ball()
-# ball.add(Ball())
-# ball.add(the_ball)
 
 
 def collision_sprite():
@@ -35,14 +33,10 @@ def collision_sprite():
     vert_dir = ""
     direction = ""
     if pygame.sprite.spritecollide(opponent.sprite, ball, False):
-        # print("I hit opponent!")
         vert_dir = opponent.sprite.direction  # up or down
-        print("opp d: " + vert_dir)
         direction = "left"
     elif pygame.sprite.spritecollide(player.sprite, ball, False):
-        # print("I hit the player!")
         vert_dir = player.sprite.direction  # up or down
-        print("player d: " + vert_dir)
         direction = "right"
 
     return direction, vert_dir
@@ -56,10 +50,6 @@ def main():
 
     # Create the clock object for the framerate
     clock = pygame.time.Clock()
-
-    # Timer for enemy
-    # opponent_timer = pygame.USEREVENT + 1
-    # pygame.time.set_timer(opponent_timer, 3000)
 
     # Player & opponent score
     player_score = 0
@@ -111,26 +101,27 @@ def main():
             ball.update(direction=d, vert_dir=vd)
 
             if the_ball.direction == "game over":
-                # print("Someone lost...")
+                # Ball is out of bounds on left or right side
                 game_active = False
         else:
+            # Start screen or Game over screen
             screen.fill("black")
-
-            # Someone may have lost...
             if update_score:
                 ball_x_pos = the_ball.rect.x
                 if ball_x_pos < 20:
-                    # player lost
+                    # opponent won
                     opponent_score += 1
                 elif ball_x_pos > w - 20:
+                    # player won
                     player_score += 1
                 update_score = False
 
             if player_score == 0 and opponent_score == 0:
+                # Show start screen
                 screen.blit(game_title_surf, game_title_rect)
                 screen.blit(game_start_msg, game_start_msg_rect)
             else:
-                # Show instructions if score is 0, otherwise show the score
+                # Show score screen
                 your_score = f"Your score: {player_score}"
                 opp_score = f"Opponent's score: {opponent_score}"
                 score_msg_1 = test_font.render(

@@ -1,5 +1,4 @@
 import pygame
-from sys import exit
 
 w = 640
 h = 480
