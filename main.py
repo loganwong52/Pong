@@ -86,10 +86,10 @@ def main():
                     update_score = True
                     the_ball = Ball()
                     ball.add(the_ball)
+                    player.update(game_restart=True)
 
         if game_active:
             screen.fill("black")
-            # screen.blit(background, (0, 0))
 
             player.draw(screen)
             player.update()
@@ -102,7 +102,7 @@ def main():
             ball.update(direction=d)
 
             if the_ball.direction == "game over":
-                print("Someone lost...")
+                # print("Someone lost...")
                 game_active = False
         else:
             screen.fill("black")
@@ -113,7 +113,7 @@ def main():
                 if ball_x_pos < 20:
                     # player lost
                     opponent_score += 1
-                elif ball_x_pos > w:
+                elif ball_x_pos > w - 20:
                     player_score += 1
                 update_score = False
 

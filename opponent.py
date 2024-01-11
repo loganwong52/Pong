@@ -43,4 +43,4 @@ class Opponent(pygame.sprite.Sprite):
 
     def update(self):
         self.movement()
-        # self.rect.y += self.amount
+        self.rect.y += self.amount

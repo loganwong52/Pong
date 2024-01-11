@@ -27,5 +27,8 @@ class Player(pygame.sprite.Sprite):
             if self.rect.bottom >= h:
                 self.rect.bottom = h
 
-    def update(self):
+    def update(self, game_restart=False):
         self.player_input()
+
+        if game_restart:
+            self.rect.midleft = (0, halfway)
