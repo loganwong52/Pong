@@ -18,7 +18,7 @@ opponent.add(Opponent())
 ball = pygame.sprite.Group()
 the_ball = Ball()
 # ball.add(Ball())
-ball.add(the_ball)
+# ball.add(the_ball)
 
 
 def collision_sprite():
@@ -81,8 +81,11 @@ def main():
                 pass
             else:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    ball.empty()
                     game_active = True
                     update_score = True
+                    the_ball = Ball()
+                    ball.add(the_ball)
 
         if game_active:
             screen.fill("black")

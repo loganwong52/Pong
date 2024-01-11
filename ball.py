@@ -49,12 +49,9 @@ class Ball(pygame.sprite.Sprite):
         """
         if self.rect.right <= 20 or self.rect.left >= w - 20:
             self.kill()
-            # reset
-            self.rect.midleft = (20, halfway)
 
     def update(self, direction=""):
         self.player_input()
-        # self.destroy()
 
         if direction != "" and self.direction != "game over":
             self.direction = direction
