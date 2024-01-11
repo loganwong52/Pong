@@ -17,6 +17,7 @@ class Opponent(pygame.sprite.Sprite):
         self.image = pygame.Surface((20, 200))
         self.image.fill("red")
         self.rect = self.image.get_rect(midright=(w, halfway))
+        self.direction = ""
 
     def movement(self):
         # Only call this if top is at 0 or bottom is at h
@@ -44,3 +45,7 @@ class Opponent(pygame.sprite.Sprite):
     def update(self):
         self.movement()
         self.rect.y += self.amount
+        if self.amount:
+            self.direction = "down"
+        else:
+            self.direction = "up"

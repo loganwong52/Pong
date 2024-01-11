@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 w = 640
 h = 480
@@ -15,6 +16,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(midleft=(20, halfway))
 
         self.direction = ""
+        self.vertical_direction = ""
         self.follow_player = ""
         self.game_started = False
 
@@ -31,13 +33,21 @@ class Ball(pygame.sprite.Sprite):
             # space key is pressed, launch ball, game actuall starts
             self.direction = "right"
             self.game_started = True
+            print("self.follow player: " + self.follow_player)
 
         # Ball follows player before space is pressed
         if not self.game_started:
             if keys[pygame.K_UP] and self.direction == "":
                 self.follow_player = "up"
+                self.move_up()
+
             if keys[pygame.K_DOWN] and self.direction == "":
                 self.follow_player = "down"
+                self.move_down()
+
+            self.follow_player = ""
+
+            print("inside self.follow player: " + self.follow_player)
 
     def move_right(self):
         # Moves to the right until it hits the opponent
@@ -45,7 +55,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect.x += amount
 
         if self.rect.x >= w:
-            print("game over")
+            # print("game over")
             self.direction = "game over"
 
     def move_left(self):
@@ -54,9 +64,39 @@ class Ball(pygame.sprite.Sprite):
         self.rect.x -= amount
 
         if self.rect.x <= 0:
-            print("game over")
+            # print("game over")
             self.direction = "game over"
 
+    def move_up_or_down(self):
+        """
+        I'm lazy, so if ball hits top/bottom edge, it remains
+        at that y-value.
+        """
+        # print("follow player direction: " + self.follow_player)
+        if self.follow_player == "up" or self.vertical_direction == "up":
+            if randint(0, 1):
+                # move up by 1
+                self.rect.y -= 1
+            else:
+                # move up by 2?
+                self.rect.y -= 2
+        elif self.follow_player == "down" or self.vertical_direction == "down":
+            if randint(0, 1):
+                # move down by 1
+                self.rect.y += 1
+            else:
+                # move down by 2?
+                self.rect.y += 2
+        # self.follow_player = ""
+
+        if self.rect.top <= 0:
+            self.rect.top = 0
+            self.vertical_direction = ""
+        elif self.rect.bottom >= h:
+            self.rect.bottom = h
+            self.vertical_direction = ""
+
+    # Make ball follow player before Space is pressed
     def move_up(self):
         self.rect.y -= amount
         if self.rect.y <= 100:
@@ -64,7 +104,6 @@ class Ball(pygame.sprite.Sprite):
 
     def move_down(self):
         self.rect.y += amount
-
         if self.rect.y > h - 100:
             self.rect.y = h - 100
 
@@ -75,21 +114,36 @@ class Ball(pygame.sprite.Sprite):
         if self.rect.right <= 20 or self.rect.left >= w - 20:
             self.kill()
 
-    def update(self, direction=""):
+    def update(self, direction="", vert_dir=""):
         self.player_input()
 
         if direction != "" and self.direction != "game over":
             self.direction = direction
 
+        if vert_dir == "up":
+            self.vertical_direction = "up"
+        elif vert_dir == "down":
+            self.vertical_direction = "down"
+
         if self.direction == "right":
             self.move_right()
+            self.move_up_or_down()
         elif self.direction == "left":
             self.move_left()
+            self.move_up_or_down()
 
-        if not self.game_started:
-            # check if up/down keys pressed
-            if self.follow_player == "up":
-                self.move_up()
-            elif self.follow_player == "down":
-                self.move_down()
-            self.follow_player = ""
+        # if self.game_started:
+        #     if self.rect.top <= 0:
+        #         self.rect.top = 0
+        #         self.vertical_direction = ""
+        #     elif self.rect.bottom >= h:
+        #         self.rect.bottom = h
+        #         self.vertical_direction = ""
+
+        # if not self.game_started:
+        #     # check if up/down keys pressed
+        #     if self.follow_player == "up":
+        #         self.move_up()
+        #     elif self.follow_player == "down":
+        #         self.move_down()
+        #     self.follow_player = ""

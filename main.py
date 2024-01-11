@@ -8,6 +8,9 @@ from player import Player
 from opponent import Opponent
 from ball import Ball
 
+w = 640
+h = 480
+
 # Group single
 player = pygame.sprite.GroupSingle()
 player.add(Player())
@@ -25,23 +28,29 @@ def collision_sprite():
     """
     If ball collides with opponent, change direction to left.
     If ball collides with player, change direction to right.
+
+    If opp or player is going down, ball goes down.
+    If opp or player is going up, ball goes up.
     """
+    vert_dir = ""
     direction = ""
     if pygame.sprite.spritecollide(opponent.sprite, ball, False):
         # print("I hit opponent!")
+        vert_dir = opponent.sprite.direction  # up or down
+        print("opp d: " + vert_dir)
         direction = "left"
     elif pygame.sprite.spritecollide(player.sprite, ball, False):
         # print("I hit the player!")
+        vert_dir = player.sprite.direction  # up or down
+        print("player d: " + vert_dir)
         direction = "right"
 
-    return direction
+    return direction, vert_dir
 
 
 def main():
     pygame.init()
     # CREATE DISPLAY SURFACE
-    w = 640
-    h = 480
     screen = pygame.display.set_mode((w, h))
     pygame.display.set_caption("Pong")
 
@@ -97,9 +106,9 @@ def main():
             opponent.draw(screen)
             opponent.update()
 
-            d = collision_sprite()
+            d, vd = collision_sprite()
             ball.draw(screen)
-            ball.update(direction=d)
+            ball.update(direction=d, vert_dir=vd)
 
             if the_ball.direction == "game over":
                 # print("Someone lost...")
