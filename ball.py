@@ -21,6 +21,9 @@ class Ball(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] and self.direction == "":
             # space key is pressed, launch ball
             self.direction = "right"
+        if keys[pygame.K_RETURN] and self.direction == "game over":
+            self.rect.midleft = (20, h / 2)
+            self.direction == ""
 
     def move_right(self):
         # Moves to the right until it hits the opponent
@@ -40,13 +43,18 @@ class Ball(pygame.sprite.Sprite):
             print("game over")
             self.direction = "game over"
 
-    def change_direction(self, direction):
-        print("i am direction: " + direction)
-        # Called when ball hits player or opponent
-        self.direction = direction
+    def destroy(self):
+        """
+        If the sprite goes too far left off screen, destroy it.
+        """
+        if self.rect.right <= 20 or self.rect.left >= w - 20:
+            self.kill()
+            # reset
+            self.rect.midleft = (20, halfway)
 
     def update(self, direction=""):
         self.player_input()
+        # self.destroy()
 
         if direction != "" and self.direction != "game over":
             self.direction = direction
