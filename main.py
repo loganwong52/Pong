@@ -6,6 +6,7 @@ from random import randint, choice
 # local imports
 from player import Player
 from opponent import Opponent
+from ball import Ball
 
 pygame.init()
 # CREATE DISPLAY SURFACE
@@ -32,6 +33,9 @@ player.add(Player())
 opponent = pygame.sprite.GroupSingle()
 opponent.add(Opponent())
 
+ball = pygame.sprite.Group()
+ball.add(Ball())
+
 # While loop
 while True:
     # Event loop
@@ -48,6 +52,9 @@ while True:
 
     opponent.draw(screen)
     opponent.update()
+
+    ball.draw(screen)
+    ball.update()
 
     # Update everything
     pygame.display.update()
