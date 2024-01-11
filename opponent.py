@@ -16,7 +16,7 @@ class Opponent(pygame.sprite.Sprite):
         self.amount = amount
         self.image = pygame.Surface((20, 200))
         self.image.fill("red")
-        self.rect = self.image.get_rect(right=w)
+        self.rect = self.image.get_rect(midright=(w, halfway))
 
     def movement(self):
         # Only call this if top is at 0 or bottom is at h
@@ -43,4 +43,4 @@ class Opponent(pygame.sprite.Sprite):
 
     def update(self):
         self.movement()
-        self.rect.y += self.amount
+        # self.rect.y += self.amount
