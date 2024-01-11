@@ -38,17 +38,16 @@ class Ball(pygame.sprite.Sprite):
         if not self.game_started:
             if keys[pygame.K_UP] and self.direction == "":
                 self.follow_player = "up"
-                self.move_up()
+                self.follow_player_up()
 
             if keys[pygame.K_DOWN] and self.direction == "":
                 self.follow_player = "down"
-                self.move_down()
+                self.follow_player_down()
 
             self.follow_player = ""
 
     def move_right(self):
         # Moves to the right until it hits the opponent
-        # while self.rect.x < w:
         self.rect.x += amount
 
         if self.rect.x >= w:
@@ -57,7 +56,6 @@ class Ball(pygame.sprite.Sprite):
 
     def move_left(self):
         # Moves to the right until it hits the opponent
-        # while self.rect.x < w:
         self.rect.x -= amount
 
         if self.rect.x <= 0:
@@ -67,9 +65,10 @@ class Ball(pygame.sprite.Sprite):
     def move_up_or_down(self):
         """
         I'm lazy, so if ball hits top/bottom edge, it remains
-        at that y-value.
+        along that y-value.
+        Moves the ball up or down after being hit by a paddle
+        and maintains that paddle's momentum.
         """
-        # print("follow player direction: " + self.follow_player)
         if self.follow_player == "up" or self.vertical_direction == "up":
             if randint(0, 1):
                 # move up by 1
@@ -94,19 +93,19 @@ class Ball(pygame.sprite.Sprite):
             self.vertical_direction = ""
 
     # Make ball follow player before Space is pressed
-    def move_up(self):
+    def follow_player_up(self):
         self.rect.y -= amount
         if self.rect.y <= 100:
             self.rect.y = 100
 
-    def move_down(self):
+    def follow_player_down(self):
         self.rect.y += amount
         if self.rect.y > h - 100:
             self.rect.y = h - 100
 
     def destroy(self):
         """
-        If the sprite goes too far left off screen, destroy it.
+        If the sprite goes off screen, destroy it.
         """
         if self.rect.right <= 20 or self.rect.left >= w - 20:
             self.kill()
@@ -117,11 +116,13 @@ class Ball(pygame.sprite.Sprite):
         if direction != "" and self.direction != "game over":
             self.direction = direction
 
+        # Dictate vertical movement
         if vert_dir == "up":
             self.vertical_direction = "up"
         elif vert_dir == "down":
             self.vertical_direction = "down"
 
+        # Ball moves diagonally up/down, left/right
         if self.direction == "right":
             self.move_right()
             self.move_up_or_down()

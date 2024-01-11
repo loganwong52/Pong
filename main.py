@@ -1,7 +1,6 @@
 # python imports
 import pygame
 from sys import exit
-from random import randint, choice
 
 # local imports
 from player import Player
@@ -10,14 +9,17 @@ from ball import Ball
 
 w = 640
 h = 480
+halfway = h / 2
 
 # Group single
 player = pygame.sprite.GroupSingle()
 player.add(Player())
 
 opponent = pygame.sprite.GroupSingle()
-opponent.add(Opponent())
+the_opponent = Opponent()
+opponent.add(the_opponent)
 
+# Group
 ball = pygame.sprite.Group()
 the_ball = Ball()
 
@@ -32,14 +34,17 @@ def collision_sprite():
     """
     vert_dir = ""
     direction = ""
+    who_was_hit = ""
     if pygame.sprite.spritecollide(opponent.sprite, ball, False):
         vert_dir = opponent.sprite.direction  # up or down
         direction = "left"
+        who_was_hit = "opponent"
     elif pygame.sprite.spritecollide(player.sprite, ball, False):
         vert_dir = player.sprite.direction  # up or down
         direction = "right"
+        who_was_hit = "player"
 
-    return direction, vert_dir
+    return direction, vert_dir, who_was_hit
 
 
 def main():
@@ -54,23 +59,31 @@ def main():
     # Player & opponent score
     player_score = 0
     opponent_score = 0
-    test_font = pygame.font.Font("freesansbold.ttf", 50)
+    font = pygame.font.Font("freesansbold.ttf", 50)
 
     # Start screen title
-    game_title_surf = test_font.render("Pong", False, "Yellow")
+    game_title_surf = font.render("Pong", False, "Yellow")
     game_title_rect = game_title_surf.get_rect(center=(w / 2, h / 2 - 100))
     # Start screen score
-    game_start_msg = test_font.render("Press Enter to start", False, "White")
+    game_start_msg = font.render("Press Enter to start", False, "White")
     game_start_msg_rect = game_start_msg.get_rect(center=(w / 2, h / 2))
-    game_cont_msg = test_font.render("Press Enter to continue", False, "White")
+    game_start_msg_2 = font.render("Get 11 points to win!", False, "Red")
+    game_start_msg_rect_2 = game_start_msg_2.get_rect(center=(w / 2, h / 2 + 100))
+    # Continue screen score
+    game_cont_msg = font.render("Press Enter to continue", False, "White")
     game_cont_msg_rect = game_start_msg.get_rect(center=(w / 2 - 50, 330))
+
+    # win/lose messages
+    you_won_msg = font.render("You won!", False, "White")
+    you_won_msg_rect = you_won_msg.get_rect(center=(w / 2, 330))
+
+    you_lost_msg = font.render("You lost!", False, "White")
+    you_lost_msg_rect = you_lost_msg.get_rect(center=(w / 2, 330))
 
     game_active = False
     update_score = False
 
-    # While loop
     while True:
-        # Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -86,6 +99,13 @@ def main():
                     the_ball = Ball()
                     ball.add(the_ball)
                     player.update(game_restart=True)
+                    the_opponent.follow_ball = False
+                    the_opponent.rect.midright = (w, halfway)
+                    the_opponent.follow_player = True
+
+                    if player_score == 11 or opponent_score == 11:
+                        player_score = 0
+                        opponent_score = 0
 
         if game_active:
             screen.fill("black")
@@ -93,10 +113,14 @@ def main():
             player.draw(screen)
             player.update()
 
-            opponent.draw(screen)
-            opponent.update()
+            d, vd, wwh = collision_sprite()
 
-            d, vd = collision_sprite()
+            opponent.draw(screen)
+            if wwh == "player":
+                opponent.update(vert_dir=vd)
+            else:
+                opponent.update()
+
             ball.draw(screen)
             ball.update(direction=d, vert_dir=vd)
 
@@ -120,16 +144,18 @@ def main():
                 # Show start screen
                 screen.blit(game_title_surf, game_title_rect)
                 screen.blit(game_start_msg, game_start_msg_rect)
+                screen.blit(game_start_msg_2, game_start_msg_rect_2)
+
             else:
                 # Show score screen
                 your_score = f"Your score: {player_score}"
                 opp_score = f"Opponent's score: {opponent_score}"
-                score_msg_1 = test_font.render(
+                score_msg_1 = font.render(
                     your_score,
                     False,
                     "White",
                 )
-                score_msg_2 = test_font.render(
+                score_msg_2 = font.render(
                     opp_score,
                     False,
                     "Red",
@@ -139,7 +165,15 @@ def main():
 
                 screen.blit(score_msg_1, score_msg_rect_1)
                 screen.blit(score_msg_2, score_msg_rect_2)
-                screen.blit(game_cont_msg, game_cont_msg_rect)
+                if player_score == 11:
+                    # You won!
+                    screen.blit(you_won_msg, you_won_msg_rect)
+
+                elif opponent_score == 11:
+                    # You lost!
+                    screen.blit(you_lost_msg, you_lost_msg_rect)
+                else:
+                    screen.blit(game_cont_msg, game_cont_msg_rect)
 
         # Update everything
         pygame.display.update()

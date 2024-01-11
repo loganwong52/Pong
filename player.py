@@ -18,12 +18,15 @@ class Player(pygame.sprite.Sprite):
 
     def player_input(self):
         keys = pygame.key.get_pressed()
+
+        # up arrow key makes paddle move up
         if keys[pygame.K_UP]:
             self.direction = "up"
             self.rect.y -= self.amount
             if self.rect.top <= 0:
                 self.rect.top = 0
 
+        # down arrow key makes paddle move down
         if keys[pygame.K_DOWN]:
             self.direction = "down"
             self.rect.y += self.amount
